@@ -1,4 +1,4 @@
-# ONNX Runtime 物体検出 推論スクリプト集
+# LibreYOLO ONNX Runtime 推論スクリプト
 
 [LibreYOLO](https://github.com/LibreYOLO/libreyolo)（MIT ライセンスの OSS コンピュータビジョンライブラリ）からエクスポートした 7 種類の物体検出モデルを、**ONNX Runtime + OpenCV + NumPy だけ**で動かす単一ファイル完結の推論スクリプト集です。学習フレームワーク（PyTorch など）に依存せず、CPU だけで動作します。
 
