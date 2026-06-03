@@ -1,0 +1,52 @@
+# === モデルファイル (サイズが大きいため Git には含めない) ===
+# README の「モデルの入手」を参照して各 *.onnx をリポジトリ直下に配置してください。
+*.onnx
+
+# === NPU (AXera/pulsar2) ビルド関連 (公開デモには含めない) ===
+# 注: .gitignore は行末コメント非対応。コメントは必ず独立行に書くこと。
+# pulsar2 の作業ディレクトリ (~1GB超, 実行毎に再生成, root所有)
+work/
+# コンパイル済み .axmodel
+axmodel/
+# キャリブレーション用 npy / tar (make_calib.py で再生成可能)
+calib/
+*.axmodel
+*.tar
+*.npy
+*_build.log
+# NPU 量子化用キャリブレーション生成スクリプト / pulsar2 ビルド設定
+make_calib.py
+configs/
+
+# === uv / Python ===
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.python-version.local
+
+# === OS / エディタ ===
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# === 推論で生成される出力画像 ===
+# README 掲載用の sample_640x480_*.jpg は明示的に追跡対象とする (下の ! で除外解除)。
+# それ以外の画像から生成した *_yolo9.jpg などの出力はコミットしない。
+*_yolo9.jpg
+*_yolox.jpg
+*_picodet.jpg
+*_dfine.jpg
+*_deimv2.jpg
+*_rtdetrv4.jpg
+*_rfdetr.jpg
+*_det.jpg
+!sample_640x480_yolo9.jpg
+!sample_640x480_yolox.jpg
+!sample_640x480_picodet.jpg
+!sample_640x480_dfine.jpg
+!sample_640x480_deimv2.jpg
+!sample_640x480_rtdetrv4.jpg
+!sample_640x480_rfdetr.jpg

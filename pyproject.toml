@@ -1,0 +1,15 @@
+[project]
+name = "onnxruntime-object-detection"
+version = "0.1.0"
+description = "ONNX Runtime standalone object detection inference scripts (YOLOv9 / YOLOX / PicoDet / D-FINE / DEIMv2 / RT-DETRv4 / RF-DETR)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "onnxruntime>=1.16.0",
+    "opencv-python>=4.8.0",
+    "numpy>=1.21.0",
+]
+
+# スクリプト集なのでパッケージとしてはビルドしない（仮想プロジェクト扱い）
+[tool.uv]
+package = false
