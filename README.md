@@ -126,7 +126,7 @@ LibreYOLO("LibreYOLO9t.pt").export(format="onnx", imgsz=640)
 | `picodet_s.onnx` | `LibrePICODETs.pt` | [LibreYOLO/LibrePICODETs](https://huggingface.co/LibreYOLO/LibrePICODETs) | 320 |
 | `dfine_n.onnx` | `LibreDFINEn.pt` | [LibreYOLO/LibreDFINEn](https://huggingface.co/LibreYOLO/LibreDFINEn) | 640 |
 | `deimv2_atto.onnx` | `LibreDEIMv2atto.pt` | [LibreYOLO/LibreDEIMv2atto](https://huggingface.co/LibreYOLO/LibreDEIMv2atto) | 320 |
-| `rtdetrv4_s.onnx` | RT-DETRv4 (実験的) | LibreYOLO リポジトリ/ドキュメント参照 | 640 |
+| `rtdetrv4_s.onnx` | RT-DETRv4 (実験的) | [LibreRTDETRv4s](https://huggingface.co/LibreYOLO/LibreRTDETRv4s) | 640 |
 | `rfdetr_n.onnx` | `LibreRFDETRn.pt` | [LibreYOLO/LibreRFDETRn](https://huggingface.co/LibreYOLO/LibreRFDETRn) | 384 |
 
 > エクスポート時の出力名（例 `LibreYOLO9t.onnx`）を、上表の既定ファイル名（例 `yolo9_t.onnx`）にリネームしてください。
