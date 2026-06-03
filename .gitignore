@@ -17,6 +17,9 @@ calib/
 # NPU 量子化用キャリブレーション生成スクリプト / pulsar2 ビルド設定
 make_calib.py
 configs/
+# pulsar2 の精度解析出力
+precision/
+PRECISION_*.md
 
 # === uv / Python ===
 .venv/
@@ -32,8 +35,8 @@ Thumbs.db
 .vscode/
 *.swp
 
-# === 推論で生成される出力画像 ===
-# README 掲載用の sample_640x480_*.jpg は明示的に追跡対象とする (下の ! で除外解除)。
+# === 推論で生成される出力画像 (画像はすべて image/ に置く) ===
+# README 掲載用の image/sample_640x480_*.jpg は明示的に追跡対象とする (下の ! で除外解除)。
 # それ以外の画像から生成した *_yolo9.jpg などの出力はコミットしない。
 *_yolo9.jpg
 *_yolox.jpg
@@ -43,10 +46,10 @@ Thumbs.db
 *_rtdetrv4.jpg
 *_rfdetr.jpg
 *_det.jpg
-!sample_640x480_yolo9.jpg
-!sample_640x480_yolox.jpg
-!sample_640x480_picodet.jpg
-!sample_640x480_dfine.jpg
-!sample_640x480_deimv2.jpg
-!sample_640x480_rtdetrv4.jpg
-!sample_640x480_rfdetr.jpg
+!image/sample_640x480_yolo9.jpg
+!image/sample_640x480_yolox.jpg
+!image/sample_640x480_picodet.jpg
+!image/sample_640x480_dfine.jpg
+!image/sample_640x480_deimv2.jpg
+!image/sample_640x480_rtdetrv4.jpg
+!image/sample_640x480_rfdetr.jpg

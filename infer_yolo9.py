@@ -36,7 +36,7 @@ def draw(img, dets, names):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default=os.path.join(HERE, "yolo9_t.onnx"))
-    ap.add_argument("--image", default=os.path.join(HERE, "sample_640x480.jpg"))
+    ap.add_argument("--image", default=os.path.join(HERE, "image", "sample_640x480.jpg"))
     ap.add_argument("--out", default=None)
     ap.add_argument("--conf", type=float, default=0.25)
     ap.add_argument("--iou", type=float, default=0.45)

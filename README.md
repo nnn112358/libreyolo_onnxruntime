@@ -1,8 +1,10 @@
 # ONNX Runtime 物体検出 推論スクリプト集
 
-7 種類の物体検出モデルを **ONNX Runtime + OpenCV + NumPy だけ**で動かす、単一ファイル完結の推論スクリプト集です。学習フレームワーク（PyTorch / PaddlePaddle など）に依存せず、CPU だけで動作します。
+[LibreYOLO](https://github.com/LibreYOLO/libreyolo)（MIT ライセンスの OSS コンピュータビジョンライブラリ）からエクスポートした 7 種類の物体検出モデルを、**ONNX Runtime + OpenCV + NumPy だけ**で動かす単一ファイル完結の推論スクリプト集です。学習フレームワーク（PyTorch など）に依存せず、CPU だけで動作します。
 
 各スクリプトはモデルファミリーごとに前処理・後処理を最小限の実装で書き分けており、**ONNX にエクスポート済みの検出モデルがどう動いているかを読んで理解する**ことを主眼にしています。クラス名（COCO 80）や入力サイズ `imgsz` は ONNX のメタデータから読み取るため、スクリプト側にハードコードしていません。
+
+> モデル（`*.onnx`）はこのリポジトリには含めていません。**[LibreYOLO](https://github.com/LibreYOLO/libreyolo) からエクスポートして入手します**（手順は[モデルの入手](#モデルの入手)を参照）。
 
 ## 対応モデル
 
@@ -41,7 +43,7 @@ uv run infer_yolo9.py
 
 ## 使い方
 
-引数なしで実行すると、既定モデルと同梱の `sample_640x480.jpg` を使って推論し、結果画像を `sample_640x480_<family>.jpg` として保存します。
+引数なしで実行すると、既定モデルと同梱の `image/sample_640x480.jpg` を使って推論し、結果画像を `image/sample_640x480_<family>.jpg` として保存します（出力は入力画像と同じディレクトリに保存されます）。
 
 ```bash
 uv run infer_yolo9.py
@@ -58,8 +60,8 @@ uv run infer_rfdetr.py
 | オプション | 説明 | 既定 |
 |---|---|---|
 | `--model PATH` | ONNX モデルのパス | 各スクリプトの既定モデル |
-| `--image PATH` | 入力画像 | `sample_640x480.jpg` |
-| `--out PATH` | 出力画像の保存先 | `<入力名>_<family>.jpg` |
+| `--image PATH` | 入力画像 | `image/sample_640x480.jpg` |
+| `--out PATH` | 出力画像の保存先 | 入力画像と同じ場所に `<入力名>_<family>.jpg` |
 | `--conf FLOAT` | 信頼度のしきい値 | `0.25` |
 | `--iou FLOAT` | NMS の IoU しきい値（NMS 使用モデルのみ） | `0.45` |
 
@@ -83,40 +85,68 @@ uv run infer_yolo9.py --model yolo9_e2e_t_nms-free.onnx --conf 0.3
   - person         0.912 (45,30,210,420)
   - dog            0.874 (300,210,520,460)
   ...
-  saved: sample_640x480_dfine.jpg
+  saved: image/sample_640x480_dfine.jpg
 ```
 
 ## モデルの入手
 
-ONNX モデルファイル（`*.onnx`）はサイズが大きい（合計 ~176MB、`rfdetr_n.onnx` は単体で 100MB 超）ため、**このリポジトリには含めていません**（`.gitignore` 済み）。下記のファイル名でリポジトリ直下に配置してください。`--model` で別パスを指定することもできます。
+ONNX モデルファイル（`*.onnx`）はサイズが大きい（合計 ~176MB、`rfdetr_n.onnx` は単体で 100MB 超）ため、**このリポジトリには含めていません**（`.gitignore` 済み）。モデルは [**LibreYOLO**](https://github.com/LibreYOLO/libreyolo) からエクスポートして取得します。LibreYOLO がエクスポートする ONNX には、クラス名 (`names`) と入力サイズ (`imgsz`) がメタデータ (`custom_metadata_map`) として埋め込まれるため、本スクリプトはそのまま読み込めます。
 
-| 既定ファイル名 | ベースとなるモデル | 上流プロジェクト |
-|---|---|---|
-| `yolo9_t.onnx` | YOLOv9 (tiny) | https://github.com/WongKinYiu/yolov9 |
-| `yolox_n.onnx` | YOLOX (nano) | https://github.com/Megvii-BaseDetection/YOLOX |
-| `picodet_s.onnx` | PicoDet (S) | https://github.com/PaddlePaddle/PaddleDetection |
-| `dfine_n.onnx` | D-FINE (N) | https://github.com/Peterande/D-FINE |
-| `deimv2_atto.onnx` | DEIMv2 (atto) | https://github.com/ShihuaHuang95/DEIM |
-| `rtdetrv4_s.onnx` | RT-DETR 系 (S) | https://github.com/lyuwenyu/RT-DETR |
-| `rfdetr_n.onnx` | RF-DETR (nano) | https://github.com/roboflow/rf-detr |
+### 1. LibreYOLO をインストール
 
-> 本スクリプトが想定している ONNX は、クラス名 (`names`) と入力サイズ (`imgsz`) を ONNX のメタデータ (`custom_metadata_map`) に埋め込んだ形式です。上流のモデルをエクスポートする際にこれらを付与しておくと、スクリプトをそのまま使えます。メタデータが無い場合は上表のフォールバック値（COCO 80 クラス / 既定 `imgsz`）が必要になるため、適宜スクリプトを調整してください。
+```bash
+uv pip install libreyolo
+# ONNX エクスポートに必要な追加依存は LibreYOLO のドキュメントを参照
+# https://www.libreyolo.com/docs
+```
+
+### 2. 各モデルを ONNX にエクスポート
+
+学習済み重み（`.pt`）は名前を指定するだけで [HuggingFace の LibreYOLO 組織](https://huggingface.co/LibreYOLO) から自動ダウンロードされます。CLI でも Python API でもエクスポートできます。
+
+```bash
+# CLI 例 (YOLOv9 tiny を imgsz=640 で ONNX 化)
+libreyolo export --model LibreYOLO9t.pt --format onnx --imgsz 640
+```
+
+```python
+# Python API 例
+from libreyolo import LibreYOLO
+LibreYOLO("LibreYOLO9t.pt").export(format="onnx", imgsz=640)
+```
+
+### 3. 本デモのファイル名にリネームしてリポジトリ直下へ配置
+
+各スクリプトの既定ファイル名は下表のとおりです（`--model` で任意パスを指定すればリネーム不要）。
+
+| 本デモの既定ファイル名 | LibreYOLO チェックポイント | HuggingFace | imgsz |
+|---|---|---|---|
+| `yolo9_t.onnx` | `LibreYOLO9t.pt` | [LibreYOLO/LibreYOLO9t](https://huggingface.co/LibreYOLO/LibreYOLO9t) | 640 |
+| `yolox_n.onnx` | `LibreYOLOXn.pt` | [LibreYOLO/LibreYOLOXn](https://huggingface.co/LibreYOLO/LibreYOLOXn) | 416 |
+| `picodet_s.onnx` | `LibrePICODETs.pt` | [LibreYOLO/LibrePICODETs](https://huggingface.co/LibreYOLO/LibrePICODETs) | 320 |
+| `dfine_n.onnx` | `LibreDFINEn.pt` | [LibreYOLO/LibreDFINEn](https://huggingface.co/LibreYOLO/LibreDFINEn) | 640 |
+| `deimv2_atto.onnx` | `LibreDEIMv2atto.pt` | [LibreYOLO/LibreDEIMv2atto](https://huggingface.co/LibreYOLO/LibreDEIMv2atto) | 320 |
+| `rtdetrv4_s.onnx` | RT-DETRv4 (実験的) | LibreYOLO リポジトリ/ドキュメント参照 | 640 |
+| `rfdetr_n.onnx` | `LibreRFDETRn.pt` | [LibreYOLO/LibreRFDETRn](https://huggingface.co/LibreYOLO/LibreRFDETRn) | 384 |
+
+> エクスポート時の出力名（例 `LibreYOLO9t.onnx`）を、上表の既定ファイル名（例 `yolo9_t.onnx`）にリネームしてください。
+> RT-DETRv4 は LibreYOLO では実験的（`exp`）扱いです。チェックポイント名・入手可否は LibreYOLO 本体のドキュメントを確認してください。
 
 ## 検出結果サンプル
 
-同梱の `sample_640x480.jpg` に対する各モデルの出力です。
+同梱の `image/sample_640x480.jpg` に対する各モデルの出力です。
 
 | YOLOv9 | YOLOX | PicoDet |
 |---|---|---|
-| ![YOLOv9](sample_640x480_yolo9.jpg) | ![YOLOX](sample_640x480_yolox.jpg) | ![PicoDet](sample_640x480_picodet.jpg) |
+| ![YOLOv9](image/sample_640x480_yolo9.jpg) | ![YOLOX](image/sample_640x480_yolox.jpg) | ![PicoDet](image/sample_640x480_picodet.jpg) |
 
 | D-FINE | DEIMv2 | RT-DETRv4 |
 |---|---|---|
-| ![D-FINE](sample_640x480_dfine.jpg) | ![DEIMv2](sample_640x480_deimv2.jpg) | ![RT-DETRv4](sample_640x480_rtdetrv4.jpg) |
+| ![D-FINE](image/sample_640x480_dfine.jpg) | ![DEIMv2](image/sample_640x480_deimv2.jpg) | ![RT-DETRv4](image/sample_640x480_rtdetrv4.jpg) |
 
 | RF-DETR | | |
 |---|---|---|
-| ![RF-DETR](sample_640x480_rfdetr.jpg) | | |
+| ![RF-DETR](image/sample_640x480_rfdetr.jpg) | | |
 
 ## 実装メモ
 
